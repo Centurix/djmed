@@ -7,7 +7,6 @@ Extract charts like this
 
 ![DJMed/Yuwell Chart](./examples/chart.png)
 
-
 WARNING: This is very much a work-in-progress, but it does produce usable charts from sleep data. 
 
 **DISCLAIMER: THIS SHOULD NOT BE USED FOR ANY DIAGNOSTIC PURPOSES**
@@ -28,10 +27,17 @@ I am still figuring out the binary grammar, particularly the flags in each recor
 
 Any information about these flags and locations would be very welcome.
 
+Why?
+----
+
+Yuwell do provide software for this unit called BreathCare. It is a Windows application. You could probably try to get it working in Wine maybe or whatever the equivalent is on MacOS. This is here to provide some insight into the machine and how things are stored. There are open source CPAP applications like OSCAR which could integrate this data. I believe there is also Home Assitant plugins for some CPAP so that you can control air conditioners and such like based on events. Hopefully this information can help someone.
+
 Installation and Running
 ------------------------
 
-Right now, this will show charts for all files found in the `data` directory of the repo. This uses `uv` for package management. But it only uses `matplotlib` and `numpy` for the charts. This was developed using Python 3.14, but it should work in 3.7+.
+Right now, this will show charts for all files found in the `data` directory of the repo. This uses `uv` for package management. But it only uses `matplotlib` and `numpy` for the charts.
+
+This was developed using Python 3.14, but it should work in 3.7+. Without the charts, there are no other dependencies on top of Python 3.7+. Just a couple of dataclasses.
 
 1. Clone this repository
 2. Install the dependencies with either `uv sync` or `pip install matplotlib numpy`
