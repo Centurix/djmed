@@ -20,9 +20,9 @@ I am still figuring out the binary grammar, particularly the flags in each recor
 
 * CSR = Cheyne-Stokes Respiration, heart disease related breathing
 * LL = Large Leak
-* CA = Central Apnea
-* OA = Obstructive Apnea
-* H = Hypopnea
+* CA = Central Apnea (found)
+* OA = Obstructive Apnea (found)
+* H = Hypopnea (found)
 * UA = Unknown Apnea
 * RE = RERA = Respiratory Effort Related Arousal
 
@@ -92,16 +92,16 @@ According to the documentation, the file could contain SPo2 and pulse data. Whic
 
 | Offset | Length | Data |
 |--------|--------|------|
-| 0 | 1 | Pressure (Decimal) |
+| 0 | 1 | Pressure cmH2O (Decimal) |
 | 1 | 1 | *unknown* (No data) |
 | 2 | 1 | *unknown* (No data) |
-| 3 | 1 | *unknown* (Values seen are 0, 1) |
-| 4 | 1 | *unknown* (Values seen are 0, 1, 2. Possibly OSA event) |
-| 5 | 1 | *unknown* (Values seen are 0, 1, 2) |
+| 3 | 1 | oai (Values seen are 0, 1) |
+| 4 | 1 | hi (Values seen are 0, 1, 2) |
+| 5 | 1 | cai (Values seen are 0, 1, 2) |
 | 6 | 1 | *unknown* (Values seen are 0, 1) |
 | 7 | 1 | *unknown* (No data) |
 | 8 | 1 | *unknown* (No data) |
-| 9 | 1 | Leak volume (Decimal) |
+| 9 | 1 | Leak volume Lpm (Decimal) |
 
 
 NOTE: The user manuals for the Yuwell units are included, there are no copyright terms in either documents.

@@ -25,9 +25,9 @@ class CPAPLogLine:
     logged_time: datetime
     pressure: Decimal
     leakage: Decimal
-    u3: int
-    u4: int
-    u5: int
+    oai: int
+    hi: int
+    cai: int
     u6: int
 
 
@@ -75,9 +75,9 @@ class CPAPFile:
                 pressure, = struct.unpack("B", cpap_file.read(1))
                 u1, = struct.unpack("B", cpap_file.read(1))
                 u2, = struct.unpack("B", cpap_file.read(1))
-                u3, = struct.unpack("B", cpap_file.read(1))
-                u4, = struct.unpack("B", cpap_file.read(1))
-                u5, = struct.unpack("B", cpap_file.read(1))
+                oai, = struct.unpack("B", cpap_file.read(1))
+                hi, = struct.unpack("B", cpap_file.read(1))
+                cai, = struct.unpack("B", cpap_file.read(1))
                 u6, = struct.unpack("B", cpap_file.read(1))
                 u7, = struct.unpack("B", cpap_file.read(1))
                 u8, = struct.unpack("B", cpap_file.read(1))
@@ -91,7 +91,7 @@ class CPAPFile:
                     raise InvalidCPAPFormat("Invalid CPAP format, unexpected data")
 
                 # Missing AH, HI events (possibly 1/0)
-                log_lines.append(CPAPLogLine(log_time, pressure / 10, leakage / 10, u3, u4, u5, u6))
+                log_lines.append(CPAPLogLine(log_time, pressure / 10, leakage / 10, oai, hi, cai, u6))
 
         return cls(
             log_start,
@@ -113,17 +113,26 @@ def main():
     For the time being, this just charts the minute logs in matplotlib
     """
     for file in os.scandir(DATA):
+        if file.name != "00100036.BYS":
+            continue
+
         log_file = CPAPFile.from_file(file)
         print(log_file.logs)
         times = np.array([log.logged_time for log in log_file.logs])
         pressures = np.array([log.pressure for log in log_file.logs])
         leakages = np.array([log.leakage for log in log_file.logs])
-        u4 = np.array([log.u4 for log in log_file.logs])
+        hi = np.array([log.hi for log in log_file.logs])
+        oai = np.array([log.oai for log in log_file.logs])
+        cai = np.array([log.cai for log in log_file.logs])
+        u6 = np.array([log.u6 for log in log_file.logs])
 
         fig, ax = plt.subplots(figsize=(30, 15))
         ax.plot(times, pressures)
         ax.plot(times, leakages)
-        ax.plot(times, u4)  # Marks increase in pressure?
+        ax.plot(times, hi)
+        ax.plot(times, oai)
+        ax.plot(times, cai)
+        ax.plot(times, u6)
 
         locator = mdates.SecondLocator(interval=500)
         ax.xaxis.set_major_locator(locator)
