@@ -1,0 +1,17 @@
+Date time block
+===============
+
+09 08 00 1A 11 19 09 08 07 19 1A 01
+09 08 17 35 26 19 09 09 03 02 2B 01
+09 09 03 08 38 19 09 09 07 1A 01 01
+09 0A 00 3B 0C 19 09 0A 07 19 14 01
+09 0B 00 14 1C 19 09 0B 01 13 1D 01
+09 0B 02 1A 20 19 09 0B 07 34 28 01
+09 0B 17 1C 3A 19 09 0C 07 20 09 01
+^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^
+|  |  |  |  Sec|  |  |  |  |  Seconds stop
+|  |  |  StartM|  |  |  |  Minute stop
+|  |  StartH   |  |  |  Hour stop
+|  Start Day   |  |  Day stop
+Start month    |  Month stop
+               Year stop

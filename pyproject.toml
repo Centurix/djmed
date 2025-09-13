@@ -1,0 +1,10 @@
+[project]
+name = "djmed"
+version = "0.1.0"
+description = "DJMed/Yuwell CPAP/APAP data reader"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib>=3.10.6",
+    "numpy>=2.3.3",
+]
