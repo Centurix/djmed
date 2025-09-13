@@ -113,9 +113,6 @@ def main():
     For the time being, this just charts the minute logs in matplotlib
     """
     for file in os.scandir(DATA):
-        if file.name != "00100036.BYS":
-            continue
-
         log_file = CPAPFile.from_file(file)
         print(log_file.logs)
         times = np.array([log.logged_time for log in log_file.logs])
