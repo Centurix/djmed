@@ -28,7 +28,7 @@ typedef struct {
     BYSDATETIME bfStart <style=sHeading1Accent>;
     BYSDATETIME bfStop <style=sHeading2Accent>;
     
-    UBYTE   bfUnknown1 <style=sHeading4>; // Lone byte 0x01
+    UBYTE   bfMode <style=sHeading4>; // 0x00=CPAP, 0x01=APAP
 
     UBYTE   bfRampUpTime;
     UBYTE   bfInitialPressure;

@@ -35,6 +35,7 @@ class CPAPLogLine:
 class CPAPFile:
     start: datetime
     end: datetime
+    mode: int
     ramp_time: int
     initial_pressure: Decimal
     minimum_pressure: Decimal
@@ -50,8 +51,7 @@ class CPAPFile:
         with open(file_name, "rb") as cpap_file:
             start_year, start_month, start_day, start_hour, start_minute, start_second = struct.unpack("BBBBBB", cpap_file.read(6))
             end_year, end_month, end_day, end_hour, end_minute, end_second = struct.unpack("BBBBBB", cpap_file.read(6))
-            unknown1 = cpap_file.read(1)
-            ramp_up_time, initial_pressure, minimum_pressure, maximum_pressure = struct.unpack("BBBB", cpap_file.read(4))
+            mode, ramp_up_time, initial_pressure, minimum_pressure, maximum_pressure = struct.unpack("BBBBB", cpap_file.read(5))
             unknown2 = cpap_file.read(1)
             humidity, = struct.unpack("B", cpap_file.read(1))
             unknown3 = cpap_file.read(7)
@@ -96,6 +96,7 @@ class CPAPFile:
         return cls(
             log_start,
             log_end,
+            mode,
             ramp_up_time,
             initial_pressure / 10,
             minimum_pressure / 10,
@@ -137,7 +138,10 @@ def main():
 
         fig.autofmt_xdate()
         ax.set_xlabel("Time")
-        ax.set_ylabel("Pressure (cmH2O)")
+        if log_file.mode == 0:
+            ax.set_ylabel("CPAP Pressure (cmH2O)")
+        else:
+            ax.set_ylabel("APAP Pressure (cmH2O)")
         ax.set_title(f"FILE: {file.name}: Starting {log_file.start.strftime('%Y-%m-%d')} (Between: {log_file.start.strftime('%H:%M')} and {log_file.end.strftime('%H:%M')}, Duration: {log_file.end - log_file.start})")
         plt.grid()
         plt.show()
