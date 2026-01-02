@@ -1,3 +1,5 @@
+**DISCLAIMER: THIS WORK REPRESENTS A CLEAN ROOM DESIGN OF THE DATA FROM THE YUWELL YH550 CPAP/APAP MACHINE**
+
 DJMed and Yuwell CPAP Results Reader
 ====================================
 
