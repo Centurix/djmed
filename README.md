@@ -20,7 +20,7 @@ This is a binary grammar. The `010` editor grammar support file is included in t
 I am still figuring out the binary grammar, particularly the flags in each record, which could be any of the following:
 
 * CSR = Cheyne-Stokes Respiration, heart disease related breathing
-* LL = Large Leak
+* LL = Large Leak (Leaks Lpm information is found in the record structure)
 * CA = Central Apnea (found)
 * OA = Obstructive Apnea (found)
 * H = Hypopnea (found)
@@ -29,10 +29,12 @@ I am still figuring out the binary grammar, particularly the flags in each recor
 
 Any information about these flags and locations would be very welcome.
 
+As this project stands, the data can be used to product meaningful charts of daily usage.
+
 Why?
 ----
 
-Yuwell do provide software for this unit called BreathCare. It is a Windows application. You could probably try to get it working in Wine maybe or whatever the equivalent is on MacOS. This is here to provide some insight into the machine and how things are stored. There are open source CPAP applications like OSCAR which could integrate this data. I believe there is also Home Assitant plugins for some CPAP so that you can control air conditioners and such like based on events. Hopefully this information can help someone.
+Yuwell do provide software for this unit called BreathCare Station. It is a Windows application. You could probably try to get it working in Wine maybe or whatever the equivalent is on MacOS. This is here to provide some insight into the machine and how things are stored. There are open source CPAP applications like OSCAR which could integrate this data. I believe there is also Home Assitant plugins for some CPAP so that you can control air conditioners and such like based on events. Hopefully this information can help someone.
 
 Installation and Running
 ------------------------
@@ -74,7 +76,7 @@ File is little endian
 |--------|--------|------|
 | 0 | 6 | Log start date/time |
 | 6 | 6 | Log end date/time |
-| 12 | 1 | *unknown* |
+| 12 | 1 | Mode: 0x00=CPAP, 0x01=APAP |
 | 13 | 1 | Ramp up time (minutes, integer) |
 | 14 | 1 | Initial pressure (Decimal) |
 | 15 | 1 | Minimum pressure (Decimal) |
@@ -113,3 +115,30 @@ According to the documentation, the file could contain SPo2 and pulse data. Whic
 
 
 NOTE: The user manuals for the Yuwell units are included, there are no copyright terms in either documents.
+
+What Is Missing?
+----------------
+
+From what I understand, some Yuwell CPAP/APAP machines do provide the following:
+
+* SPo2 data
+* Pulse data
+
+It could be possible that this grammar includes this.
+
+How You Can Help: Binary Grammar Coverage
+-----------------------------------------
+
+The binary grammar coverage currently stands at ~81%
+
+There are several bytes in this dataset which currently have no identified data:
+
+With data
+* Bytes 49 and 50 of the header record, which appear to be closely related to the record count in bytes 47 and 48, usually off by one
+* Byte 7 of the log record, values seen are `[0, 1]` indicating some kind of event although I've not observed matching events in the Breathcare station software
+
+Without data
+* Header bytes 18, 20, 28 and 30
+* Log record bytes 2, 3, 8 and 9
+
+I have only observed zeroes in these bytes.
