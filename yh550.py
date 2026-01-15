@@ -9,11 +9,11 @@ from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 """
-Read DJMed CPAP files
+Read DJMed CPAP files Yuwell YH-550
 """
 
 
-DATA = Path("data")
+DATA = Path("data") / "YH550"
 
                 
 class InvalidCPAPFormat(Exception):
@@ -87,6 +87,8 @@ class CPAPFile:
 
                 # Always zero, one is possibly SPo2, another is the pulse rate
                 # If we find values, we're interested to know
+                if u6 > 0:
+                    print(f"u6 threshold {u6}, {u1}, {u2}, {u7}, {u8} - {pressure}, {oai}, {hi}, {cai}, {leakage} from {file_name}, {log_time}")
                 if u1 + u2 + u7 + u8 > 0:
                     raise InvalidCPAPFormat("Invalid CPAP format, unexpected data")
 
@@ -109,42 +111,45 @@ class CPAPFile:
         )
 
 
+SHOW_CHARTS = False
+
 def main():
     """
     For the time being, this just charts the minute logs in matplotlib
     """
     for file in os.scandir(DATA):
         log_file = CPAPFile.from_file(file)
-        print(log_file.logs)
-        times = np.array([log.logged_time for log in log_file.logs])
-        pressures = np.array([log.pressure for log in log_file.logs])
-        leakages = np.array([log.leakage for log in log_file.logs])
-        hi = np.array([log.hi for log in log_file.logs])
-        oai = np.array([log.oai for log in log_file.logs])
-        cai = np.array([log.cai for log in log_file.logs])
-        u6 = np.array([log.u6 for log in log_file.logs])
+        if SHOW_CHARTS:
+            print(log_file.logs)
+            times = np.array([log.logged_time for log in log_file.logs])
+            pressures = np.array([log.pressure for log in log_file.logs])
+            leakages = np.array([log.leakage for log in log_file.logs])
+            hi = np.array([log.hi for log in log_file.logs])
+            oai = np.array([log.oai for log in log_file.logs])
+            cai = np.array([log.cai for log in log_file.logs])
+            u6 = np.array([log.u6 for log in log_file.logs])
 
-        fig, ax = plt.subplots(figsize=(30, 15))
-        ax.plot(times, pressures)
-        ax.plot(times, leakages)
-        ax.plot(times, hi)
-        ax.plot(times, oai)
-        ax.plot(times, cai)
-        ax.plot(times, u6)
+            fig, ax = plt.subplots(figsize=(30, 15))
+            ax.plot(times, pressures)
+            ax.plot(times, leakages)
+            ax.plot(times, hi)
+            ax.plot(times, oai)
+            ax.plot(times, cai)
+            ax.plot(times, u6)
 
-        locator = mdates.SecondLocator(interval=500)
-        ax.xaxis.set_major_locator(locator)
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
+            locator = mdates.SecondLocator(interval=500)
+            ax.xaxis.set_major_locator(locator)
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
 
-        fig.autofmt_xdate()
-        ax.set_xlabel("Time")
-        if log_file.mode == 0:
-            ax.set_ylabel("CPAP Pressure (cmH2O)")
-        else:
-            ax.set_ylabel("APAP Pressure (cmH2O)")
-        ax.set_title(f"FILE: {file.name}: Starting {log_file.start.strftime('%Y-%m-%d')} (Between: {log_file.start.strftime('%H:%M')} and {log_file.end.strftime('%H:%M')}, Duration: {log_file.end - log_file.start})")
-        plt.grid()
-        plt.show()
+            fig.autofmt_xdate()
+            ax.set_xlabel("Time")
+            if log_file.mode == 0:
+                ax.set_ylabel("CPAP Pressure (cmH2O)")
+            else:
+                ax.set_ylabel("APAP Pressure (cmH2O)")
+            ax.set_title(f"FILE: {file.name}: Starting {log_file.start.strftime('%Y-%m-%d')} (Between: {log_file.start.strftime('%H:%M')} and {log_file.end.strftime('%H:%M')}, Duration: {log_file.end - log_file.start})")
+            plt.grid()
+            plt.show()
 
 
 if __name__ == "__main__":

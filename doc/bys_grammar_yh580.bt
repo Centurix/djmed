@@ -1,0 +1,212 @@
+//------------------------------------------------
+//--- 010 Editor v2.0 Binary Template
+//
+//      File: BYS.bt
+//    Author: Chris Read
+//   Version: 1.0
+//   Purpose: Parse Yuwell YH580 BYS CPAP files
+//  Category: Data
+// File Mask: *.bys
+//  ID Bytes: 19
+//   History:  
+//   1.0   Chris Read: Initial release.
+//------------------------------------------------
+RequiresVersion( 16 );
+
+// Define structures used in BYS files
+
+typedef struct {
+    UBYTE   bfStartYear;
+    UBYTE   bfStartMonth;
+    UBYTE   bfStartDay;
+    UBYTE   bfStartHour;
+    UBYTE   bfStartMinute;
+    UBYTE   bfStartSecond;
+} BYSDATETIME;
+
+typedef struct {
+    UBYTE       bfMagic[4] <style=sHeading1>; // AAAA (Footer ends with BBBB)
+    UBYTE       bfMode; // 0x00=CPAP, 0x01=APAP
+    UBYTE       bfRamp; // Minutes
+    UBYTE       bfInitialPressure; // Decimal / 10
+    UBYTE       bfPressureSetting; // Decimal / 10
+    UBYTE       bfMaximumPressure; // Decimal / 10
+    UBYTE       bfMinimumPressure; // Decimal / 10
+    UBYTE       bfHumidity;
+    UBYTE       bfFPSLevel;
+    UBYTE       bfUnknown1[19] <style=sHeading4>;
+    WORD        bfRecordCount <style=sSection3>;  // Total records
+    UBYTE       bfUnknown3[99] <style=sHeading4>; // 0xFF
+    CHAR        bfSerial[16] <style=sHeading2Accent>;
+    UBYTE       bfUnknown4[144] <style=sHeading4>; // 0xFF
+    UBYTE       bfUnknown5[12] <style=sHeading4>;
+    UBYTE       bfUnknown7[2768] <style=sHeading4>;
+} BYSFILEHEADER <style=sHeading1>;
+
+typedef struct {
+    BYSDATETIME bfStart;
+    BYSDATETIME bfStop;
+    UBYTE    bfMode; // 0x00=CPAP, 0x01=APAP
+    UBYTE    bfRamp; // Ramp (minutes)
+    UBYTE    bfInitialPressure; // Decimal / 10
+    UBYTE    bfPressureSetting; // Decimal / 10
+    UBYTE    bfMaximumPressure; // Decimal / 10
+    UBYTE    bfMinimumPressure; // Decimal / 10
+    UBYTE    bfHumidity;
+    UBYTE    bfFPSLevel;
+    UBYTE    bfOAICount;
+    UBYTE    bfHICount;
+    UBYTE    bfCAICount; // Possibly?
+    UBYTE    bfUnknown7;
+    UBYTE    bfAvgPressure;
+    UBYTE    bfAvgLeakVolume;
+    WORD     bfRecordOffset; // Big endian for **reasons**
+    UBYTE    bfUnknown12;
+    UBYTE    bfMinutes; // Total number of lines for the session
+} BYSSESSIONSUMMARY;
+
+typedef struct {
+    UBYTE    bfLeakage;
+    UBYTE    bfPressure;
+    UBYTE    bfSPO2;
+    UBYTE    bfOAI;
+    UBYTE    bfHI;
+    UBYTE    bfPulse;
+    UBYTE    bfCAI;
+} BYSSESSIONLINE;
+/*
+This dataset contains:
+* SPO2
+* pulse rate
+* pressure
+* Leak
+* OAI
+* HI
+* CAI
+
+5046 session lines
+14K in minutes for all sessions?
+Data lines dont go further back and 22/12/2025?
+Session lines are split by extended record counts?
+
+*/
+
+
+
+// 141 records in Breathcare
+
+typedef struct {
+    UBYTE       bfUnknown12[5] <style=sHeading4>; // 'BBBB' and 0xFF
+} BYSFILEFOOTER <style=sHeading1>;
+
+
+BYSFILEHEADER header;
+struct BYSSESSIONSUMMARY sessions[header.bfRecordCount] <style=sHeading4>; // Session summary data
+// Number of session lines = sum(sessions[x].minutes)
+UBYTE       bfUnknown9[22906] <style=sHeading4>; // 0xFF
+// This line is a combination of header.bfRecordCount sessions each with
+// a footer for each session lines
+// Session
+// +- Lines
+// +- Session footer (? bytes)
+struct BYSSESSIONLINE sessionlines[5046] <style=sHeading4>; // Session summary data
+BYSFILEFOOTER footer;
+
+// It seems that there are X lines per session and a session footer of some kind
+// The footer is smaller than a minute line
+
+
+//typedef struct {
+//    BYSDATETIME bfStart <style=sHeading1Accent>;
+//    BYSDATETIME bfStop <style=sHeading2Accent>;
+//    
+//    UBYTE   bfMode <style=sHeading4>; // 0x00=CPAP, 0x01=APAP
+//
+//    UBYTE   bfRampUpTime;
+//    UBYTE   bfInitialPressure;
+//    UBYTE   bfMinimumPressure;
+//    UBYTE   bfMaximumPressure;
+//
+//    UBYTE   bfUnknown2 <style=sHeading4>; // Lone byte, 0x32 (50)
+//
+//    UBYTE   bfHumidity; // Possibly the humidity level
+//    
+//    CHAR    bfUnknown3[7] <style=sHeading4>;
+//    UBYTE   bfAverageLeakVolume;
+//    CHAR    bfUnknown4 <style=sHeading4>;
+//    UBYTE   bfAveragePressure;
+//    CHAR    bfUnknown5 <style=sHeading4>;
+//    CHAR    bfSerial[16] <style=sHeading2Accent>;
+//    WORD    bfRecordCount <style=sSection3>;  // Total records
+//
+//    WORD    bfSomeKindOfCount;  // Always less than bfRecordCount? Leak records?
+//
+//    CHAR    bfHeaderEnd[1] <style=sSection1>; // Always 0xF9
+//} BYSFILEHEADER <style=sHeading1>;
+
+/*
+There is a ramp up time of 10 minutes
+This seems to be 1 line per minute
+Appears to be 1 file for each session
+Total duration is the total lines * 60 for the number of hours
+
+P90 = Pressure level that eliminates breathing obstructions for at least 90% to 95% of the sleep period
+
+Average pressure was 5.2
+There is a "leak volume" in this data as well, last was 4.2
+
+AHI = ((apnea episodes + hypopnea episodes) / sleep time) × 60, example 3.3
+AHI = ((1 + 2) / 484) * 60
+Events = (3.3 / 60) * 484 = 26.62 events from somewhere
+Sleep time in minutes
+
+0–4 Normal range
+5–14 Mild sleep apnea
+15–29 Moderate sleep apnea
+30+ Severe sleep apnea
+
+
+From the documentation
+Heating level
+Air leakage
+Both expiratory and inspiratory pressure
+Leak volume
+AI
+HI
+SPo2 (probably one of the zero columns)
+
+*/
+
+// Fixed record length of 10 bytes
+//typedef struct {
+//    UBYTE    bsPressure <style=sHeading4Accent>; // Start at 40, rises to 50 and varies slightly from there
+//    CHAR    bsFlag1 <style=sDataAccent>; // These seem to be flags with 0/1 as content
+//    CHAR    bsFlag2 <style=sDataAccent>; // No values
+//    CHAR    bsFlag3 <style=sDataAccent>;
+//    CHAR    bsFlag4 <style=sDataAccent>;
+//    CHAR    bsFlag5 <style=sDataAccent>;
+//    CHAR    bsFlag6 <style=sDataAccent>;
+//    CHAR    bsFlag7 <style=sDataAccent>;
+//    CHAR    bsFlag8 <style=sDataAccent>;
+//    CHAR    bsLeakageVolume <style=sDataAccent>;
+//} BYSRECORD <style=sData>;
+
+//typedef struct {
+//    UBYTE    bsFooter <style=sSection1Accent>;
+//} BYSFOOTER <style=sSection1>;
+
+//---------------------------------------------
+
+// Define the headers
+//BYSFILEHEADER header;
+
+//struct BYSRECORD lines[header.bfRecordCount];
+
+// Check footer
+//struct BYSFOOTER footer;
+
+//if ( footer.bsFooter != 0xFA )
+//{
+//    Warning( "File ending is not 0xFA. Template stopped." );
+//    return -1;
+//}
