@@ -1,4 +1,4 @@
-**DISCLAIMER: THIS WORK REPRESENTS A CLEAN ROOM DESIGN OF THE DATA FROM THE YUWELL YH550 CPAP/APAP MACHINE**
+**DISCLAIMER: THIS WORK REPRESENTS A CLEAN ROOM DESIGN OF THE DATA FROM THE YUWELL YH550/YH580 CPAP/APAP MACHINES**
 
 DJMed and Yuwell CPAP Results Reader
 ====================================
@@ -46,7 +46,7 @@ This was developed using Python 3.14, but it should work in 3.7+. Without the ch
 1. Clone this repository
 2. Install the dependencies with either `uv sync` or `pip install matplotlib numpy`
 3. Copy your `.bys` files into the `data` directory directly, no sub-directories
-4. Run `python main.py`
+4. Run `python yh550.py`
 
 I've found these as re-branded units from many companies and drop-shipping establishments. The base manufacturer is Yuwell and this model appears to be a YH550.
 
