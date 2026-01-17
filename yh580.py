@@ -50,6 +50,7 @@ class CPAPSession:
     average_leak_volume: Decimal
     average_pressure: Decimal
     offset: int
+    u7: int  #  CAI count?
     length: int
     log_lines: list[CPAPLogLine] = field(default_factory=lambda: [])
 
@@ -96,7 +97,9 @@ class CPAPFile:
                 u3, u4 = struct.unpack("BB", cpap_file.read(2)) # Suspect CAI
                 avg_pressure, avg_leak_vol = struct.unpack("BB", cpap_file.read(2))
                 offset, = struct.unpack(">H", cpap_file.read(2))
-                u7 = struct.unpack("B", cpap_file.read(1))
+                u7, = struct.unpack("B", cpap_file.read(1))
+                if u7 > 0:
+                    print(f"Found a value in u7: {u7}, {offset}")
                 session_minutes, = struct.unpack("B", cpap_file.read(1))
 
                 sessions.append(CPAPSession(
@@ -115,11 +118,13 @@ class CPAPFile:
                     avg_leak_vol,
                     avg_pressure,
                     offset + 30208,
+                    u7,
                     session_minutes,
                     []
                 ))
 
-            # unknown6 = cpap_file.read(22906)
+            # unknown6 = cpap_file.read(22906), This read is unnecessary, but this seeks to the beginning of the session log lines
+            session_blocks = []
 
             for session in sessions:
                 cpap_file.seek(session.offset)
@@ -128,6 +133,14 @@ class CPAPFile:
                         leakage, pressure, spo2, oai, hi, pulse, cai = struct.unpack("BBBBBBB", cpap_file.read(7))
                         if minute == 0 and leakage != 249:
                             break
+                        elif minute == 0:
+                            session_blocks.append({
+                                "date": session.start,
+                                "start": session.offset,
+                                "end": session.offset + (session.length * 7),
+                                "u7": session.u7
+                            })
+
                         session.log_lines.append(CPAPLogLine(
                             log_start + timedelta(minutes=minute),
                             pressure,
@@ -141,6 +154,9 @@ class CPAPFile:
                         ))
                 except struct.error as se:
                     pass
+
+            print("Blocks:")
+            print(session_blocks)
 
         return cls(
             log_start,
