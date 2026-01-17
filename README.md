@@ -164,10 +164,11 @@ after a period of time.
 
 All sessions are stored in a single file instead of one session file per file.
 
-The file consists of two main sections:
+The file consists of three main sections:
 
 1. File header
-2. Log records
+2. Session summary records (With a record offset pointer the start of the session log lines)
+3. Session log lines, offset from position 0x7600 in the file
 
 The file header contains fixed length fields and is 3072 (3Kb) bytes in length. It includes machine settings and record count. Most numeric fields are unsigned bytes.
 
