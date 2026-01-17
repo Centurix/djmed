@@ -1,5 +1,8 @@
 **DISCLAIMER: THIS WORK REPRESENTS A CLEAN ROOM DESIGN OF THE DATA FROM THE YUWELL YH550/YH580 CPAP/APAP MACHINES**
 
+*TO DONATE DATA FILES FROM YOUR YUWELL MACHINE SO THAT IT CAN POTENTIALLY WORK WITH OSCAR, GO TO THE BOTTOM OF THIS README FILE.*
+-
+
 DJMed and Yuwell CPAP Results Reader
 ====================================
 
@@ -329,3 +332,15 @@ YH830 (BreathCare II Bi-PAP)
 Any data from these machines is very welcome.
 
 I suspect that the YH580 format could match other BreathCare I machines: YH350, YH360, YH720, YH725 and YH730
+
+HOW TO DONATE CPAP/APAP DATA FROM THESE MACHINES
+------------------------------------------------
+
+First, I don't think all these machines have sd-cards, so they might not be able to have data extracted. I know that some have Wi-fi capabilities and do talk to a mobile app.
+
+If you do have access to the data on sd-card I would be keen on acquiring a copy of the files on the card in a .zip file. However, you may have to follow instructions on reading the sd-card and also adding the files to a zip file and e-mailing it.
+
+[Here's how to use an SD-Card adaptor on a laptop](https://youtube.com/shorts/So97WtU_alE)
+[Here's how to zip files](https://youtu.be/78dc2qX7GpQ)
+
+Once you have a zip file, please upload them [HERE](https://drive.maxtux.io/s/cNcj1bXftRrg3w5)
