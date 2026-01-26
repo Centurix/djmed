@@ -90,9 +90,9 @@ typedef struct {
     UBYTE    bsPressure <style=sHeading4Accent>; // Start at 40, rises to 50 and varies slightly from there
     CHAR    bsFlag1 <style=sDataAccent>; // These seem to be flags with 0/1 as content
     CHAR    bsFlag2 <style=sDataAccent>; // No values
-    CHAR    bsFlag3 <style=sDataAccent>;
-    CHAR    bsFlag4 <style=sDataAccent>;
-    CHAR    bsFlag5 <style=sDataAccent>;
+    CHAR    bsOAI <style=sDataAccent>;
+    CHAR    bsHI <style=sDataAccent>;
+    CHAR    bsCAI <style=sDataAccent>;
     CHAR    bsFlag6 <style=sDataAccent>;
     CHAR    bsFlag7 <style=sDataAccent>;
     CHAR    bsFlag8 <style=sDataAccent>;
