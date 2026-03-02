@@ -9,6 +9,10 @@ DJMed and Yuwell CPAP Results Reader
 ![JDMed/Yuwell YH550 CPAP Machine](./examples/yh550.png)
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh580.png)
 
+WIP
+===
+![JDMed/Yuwell YH580 CPAP Machine](./examples/yh830.png)
+
 Extract charts like this
 
 ![DJMed/Yuwell Chart](./examples/chart.png)
@@ -259,6 +263,73 @@ The 7 byte record looks like this, all bytes are accounted for. Log lines are re
 
 NOTE: The user manuals for the Yuwell units are included, there are no copyright terms in either documents.
 
+BYS YH-830 File Format
+----------------------
+
+Again, this file format is different from both the YH-550 and the YH-580.
+
+File is little endian.
+
+The date format is NOT shared with the YH-550/YH-580
+
+| Offset | Length | Data |
+|--------|--------|------|
+| 0 | 2 | Year |
+| 2 | 1 | Month |
+| 3 | 1 | Day |
+| 4 | 1 | Hour |
+| 5 | 1 | Minute |
+| 6 | 1 | Second |
+
+The file and directory structure is similar to the YH-550, however supplied data is missing the zero byte RunLog.bys file.
+
+Sessions are stored per file.
+
+File header
+-----------
+
+File header is a fixed 60 bytes and contains the start/stop session times.
+
+Header contains the record count and model/serial.
+
+| Offset | Length | Data |
+|--------|--------|------|
+| 0 | 7 | Start date/time |
+| 7 | 7 | Stop date/time |
+| 14 | 2 | Record count |
+| 16 | 23 | *unknown* |
+| 39 | 16 | Model/serial |
+| 55 | 5 | *unknown* |
+
+Log Records
+-----------
+
+Records are 40 bytes in length.
+
+| Offset | Length | Data |
+|--------|--------|------|
+| 0 | 1 | Record start (0xF9) |
+| 1 | 11 | *unknown* (Always zero) |
+| 12 | 1 | Pressure |
+| 13 | 1 | Initial pressure |
+| 14 | 4 | *unknown* |
+| 18 | 1 | Ramp time (minutes) |
+| 19 | 2 | *unknown* (Always 0x04 and 0x00) |
+| 21 | 2 | Tidal volume |
+| 23 | 1 | Leak volume |
+| 24 | 1 | *unknown* |
+| 25 | 1 | Minute volume |
+| 26 | 5 | *unknown* |
+| 31 | 1 | Inspiratory Ratio |
+| 32 | 2 | *unknown* |
+| 34 | 1 | Respiratory rate |
+| 35 | 1 | OAI Event |
+| 36 | 1 | HI Event |
+| 37 | 1 | *unknown* |
+| 38 | 1 | CAI Event |
+| 39 | 1 | Record end (0xFA)
+
+
 What Is Missing?
 ----------------
 
@@ -276,6 +347,7 @@ At this current stage, I only have datasets for the following Yuwell machines:
 
 * YH550 (BreathCare ECO Auto-CPAP, A/B Models)
 * YH580 (BreathCare I Auto-CPAP)
+* YH830 (BreathCare II Bi-PAP) (This is current work in progress thanks to donated data)
 
 More data from these models is certainly welcome. These datasets do not contain personal information.
 
@@ -324,10 +396,6 @@ YH820 (BreathCare II Bi-PAP)
 YH825 (BreathCare II Bi-PAP)
 -
 ![YH-825](examples/yh825.png)
-
-YH830 (BreathCare II Bi-PAP)
--
-![YH-830](examples/yh830.png)
 
 Any data from these machines is very welcome.
 
