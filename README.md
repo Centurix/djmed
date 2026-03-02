@@ -6,11 +6,19 @@
 DJMed and Yuwell CPAP Results Reader
 ====================================
 
+YH550 (BreathCare ECO Auto-CPAP, A/B Models)
+-
 ![JDMed/Yuwell YH550 CPAP Machine](./examples/yh550.png)
+
+YH580 (BreathCare I Auto-CPAP)
+-
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh580.png)
 
 WIP
 ===
+
+YH830 (BreathCare II Bi-PAP) (This is current work in progress thanks to donated data)
+-
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh830.png)
 
 Extract charts like this
