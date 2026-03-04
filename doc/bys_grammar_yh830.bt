@@ -23,7 +23,9 @@ typedef struct {
     BYSDATETIME bfStart <style=sHeading1Accent>; // Start date/time
     BYSDATETIME bfStop <style=sHeading2Accent>; // Stop date/time
     WORD    bfRecordCount <style=sSection3>;  // Total records
-    UBYTE   bfUnknown2[23] <style=sHeading4>;
+    UBYTE   bfUnknown2[5] <style=sHeading4>;
+    UBYTE   bfHumidity <style=sHeading2Accent>;
+    UBYTE   bfUnknown4[17] <style=sHeading4>;
     CHAR    bfSerial[16] <style=sHeading2Accent>; // 16 Bytes of model and serial
     UBYTE   bfUnknown3[5] <style=sHeading4>;
 } BYSFILEHEADER <style=sHeading1>;
