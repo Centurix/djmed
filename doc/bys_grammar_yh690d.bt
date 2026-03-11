@@ -1,0 +1,80 @@
+//------------------------------------------------
+//--- 010 Editor v16.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+// RT Flow data
+RequiresVersion( 16 );
+LittleEndian();
+
+typedef struct {
+    UBYTE   bfStartYear;
+    UBYTE   bfStartMonth;
+    UBYTE   bfStartDay;
+    UBYTE   bfStartHour;
+    UBYTE   bfStartMinute;
+    UBYTE   bfStartSecond;
+} BYSDATETIME;
+
+typedef struct {
+    BYSDATETIME bfStart <style=sHeading1Accent>;
+    WORD    bfRecordCount;
+} BYSFILEHEADER <style=sHeading1>;
+
+typedef struct {
+    UBYTE bfSample1;
+    UBYTE bfSample2;
+    UBYTE bfSample3;
+    UBYTE bfSample4;
+    UBYTE bfSample5;
+    UBYTE bfSample6;
+    UBYTE bfSample7;
+    UBYTE bfSample8;
+    UBYTE bfSample9;
+    UBYTE bfSample10;
+} BYSFLOWRATESECOND <style=sHeading4>;
+
+typedef struct {
+    BYSFLOWRATESECOND bfSecond1[60];
+    BYSFLOWRATESECOND bfSecond2[60]; // Flow rate data is here, 0x43 (67) = -3 0x7F (127) = 57, 0x46 (70) = 0?
+    UBYTE   bfEOR <style=sHeading3>; // Always 0xFE
+} BYSRECORD <style=sHeading2>;
+
+BYSFILEHEADER header;
+
+//struct BYSRECORD lines[1];
+struct BYSRECORD lines[header.bfRecordCount];
+
+/*
+Changing a minute block to 0x22 results in -36Lpm for the whole series
+
+0x23 = -35Lpm
+0x24 = -34Lpm
+
+
+Flow rate samples are in the second part of the block
+
+0 = 70 (0x46)
+
+So range is -70 to 186
+
+Samples 1/10 a second
+
+283 records @ 600 x 2
+
+600 samples a minute
+
+10 bytes per second
+
+1 bytes per sample?
+
+The first block of 600 bytes match the same shape as the second 600 bytes but with higher values
+
+*/

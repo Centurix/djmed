@@ -23,23 +23,24 @@ typedef struct {
     BYSDATETIME bfStart <style=sHeading1Accent>; // Start date/time
     BYSDATETIME bfStop <style=sHeading2Accent>; // Stop date/time
     WORD    bfRecordCount <style=sSection3>;  // Total records
-    UBYTE   bfUnknown2[5] <style=sHeading4>;
+    UBYTE   bfUnknown2[5] <style=sHeading4>; // NOT THESE
     UBYTE   bfHumidity <style=sHeading2Accent>;
-    UBYTE   bfUnknown4[17] <style=sHeading4>;
+    UBYTE   bfUnknown4[17] <style=sHeading4>; // 
     CHAR    bfSerial[16] <style=sHeading2Accent>; // 16 Bytes of model and serial
-    UBYTE   bfUnknown3[5] <style=sHeading4>;
+    UBYTE   bfUnknown3[5] <style=sHeading4>; // NO ZERO, probably not CPAP mode
 } BYSFILEHEADER <style=sHeading1>;
 
 typedef struct {
     UBYTE    bfRecordStart <style=sHeading2Accent>; // Always 0xF9
-    UBYTE    bfUnknown4[11]; // Always seems to be zeroes
+    UBYTE    bfMode; // 0 = CPAP, 1 = S, 2 = T, 3 = ST, 4 = VGPS, 5 = AutoS, 6 = APAP
+    UBYTE    bfUnknown4[10]; // Always seems to be zeroes
     UBYTE    bsPressure <style=sHeading2Accent>; // Start at 40, rises to 50 and varies slightly from there
     UBYTE    bfInitialPressure <style=sHeading2Accent>;
     UBYTE    bfUnknown5[4] <style=sHeading4>; // Always seems to be zeroes
     UBYTE    bfRamp <style=sHeading2Accent>;
     UBYTE    bfUnknown11[2] <style=sHeading4>; // 4, 0
     WORD     bfTidalVolume <style=sHeading2Accent>;
-    UBYTE    bsLeakVolume <style=sHeading2Accent>;
+    UBYTE    bsLeakVolume <style=sHeading2Accent>; // Should be around 18?
     UBYTE    bfUnknown6 <style=sHeading4>; // 0
     UBYTE    bsMinuteVolume <style=sHeading2Accent>; // Start at 40, rises to 50 and varies slightly from there
     UBYTE    bfUnknown7[5] <style=sHeading4>;

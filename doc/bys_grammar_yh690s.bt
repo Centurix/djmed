@@ -1,0 +1,40 @@
+//------------------------------------------------
+//--- 010 Editor v16.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+// Session summary file, start/stop times, serial, mode, FPS level and ramp time
+RequiresVersion( 16 );
+
+typedef struct {
+    UBYTE   bfStartYear;
+    UBYTE   bfStartMonth;
+    UBYTE   bfStartDay;
+    UBYTE   bfStartHour;
+    UBYTE   bfStartMinute;
+    UBYTE   bfStartSecond;
+} BYSDATETIME;
+
+typedef struct {
+    UBYTE       bfUnknown1[2];
+    BYSDATETIME bfStart <style=sHeading1Accent>;
+    BYSDATETIME bfStop <style=sHeading2Accent>;
+    UBYTE       bfUnknown2[18];
+    CHAR        bfSerial[16];
+    UBYTE       bfUnknown4[2];
+    BYSDATETIME bfUnknown5;
+    UBYTE       bfMode; // 0x00 = CPAP, 0x01 = APAP, 0x02 = S, 0x03 = T, 0x04 = ST, 0x05 = VGPS, 0x06 = AutoS, 0x07 = ASV, 0x08 = PCV, 0x09 = APFH, 0x0A = Auto ASV
+    UBYTE       bfUnknown3[18];
+    UBYTE       bfFPSLevel; // ?? Maybe??
+    UBYTE       bfRamp;
+} BYSFILEHEADER <style=sHeading1>;
+
+
+BYSFILEHEADER header;

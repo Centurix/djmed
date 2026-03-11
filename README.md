@@ -14,12 +14,16 @@ YH580 (BreathCare I Auto-CPAP)
 -
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh580.png)
 
-WIP
-===
-
 YH830 (BreathCare II Bi-PAP) (This is current work in progress thanks to donated data)
 -
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh830.png)
+
+WIP
+===
+
+YH690 (BreathCare III Auto-CPAP, A/B Models)
+-
+![YH-690](examples/yh690.png)
 
 Extract charts like this
 
@@ -338,6 +342,17 @@ Records are 40 bytes in length.
 | 39 | 1 | Record end (0xFA)
 
 
+BYS YH-690 File Format
+----------------------
+
+This file format is different from any of the others, each session is stored in its own directory containing three files:
+
+* Session Summary
+* Minute Summary
+* RT Flow Rate data
+
+
+
 What Is Missing?
 ----------------
 
@@ -381,10 +396,6 @@ YH680 (BreathCare III Auto-CPAP, A/B Models)
 -
 ![YH-680](examples/yh680.png)
 
-YH690 (BreathCare III Auto-CPAP, A/B Models)
--
-![YH-690](examples/yh690.png)
-
 YH720 (BreathCare I Bi-PAP)
 -
 ![YH-720](examples/yh720.png)
@@ -406,6 +417,8 @@ YH825 (BreathCare II Bi-PAP)
 ![YH-825](examples/yh825.png)
 
 Any data from these machines is very welcome.
+
+I'm working on the theory that the BreathCare revision dictates the file format. If this is the case then the completion of the YH-690 format would provide support for all the machines listed here. This could also mean that support for all BreathCare ECO/I/II is already in OSCAR.
 
 I suspect that the YH580 format could match other BreathCare I machines: YH350, YH360, YH720, YH725 and YH730
 

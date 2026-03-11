@@ -1,0 +1,44 @@
+//------------------------------------------------
+//--- 010 Editor v16.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+// Minute summary data
+RequiresVersion( 16 );
+
+typedef struct {
+    UBYTE   bfStartYear;
+    UBYTE   bfStartMonth;
+    UBYTE   bfStartDay;
+    UBYTE   bfStartHour;
+    UBYTE   bfStartMinute;
+    UBYTE   bfStartSecond;
+} BYSDATETIME;
+
+typedef struct {
+    BYSDATETIME bfStart <style=sHeading1Accent>;
+    WORD    bfRecordCount;
+} BYSFILEHEADER <style=sHeading1>;
+
+typedef struct {
+    UBYTE   bfPressure <style=sHeading4>;
+    UBYTE   bfOAI;
+    UBYTE   bfCAI;
+    UBYTE   bfHI;
+    UBYTE   bfUnknown[6];
+    UBYTE   bfLeakageVolume;
+    UBYTE   bfRecord[6];
+    UBYTE   bfEOR <style=sHeading3>; // Always 0xFE
+} BYSRECORD <style=sHeading2>;
+
+BYSFILEHEADER header;
+
+//struct BYSRECORD lines[1];
+struct BYSRECORD lines[header.bfRecordCount];
