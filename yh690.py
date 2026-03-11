@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import glob
 from pathlib import Path
 import struct
 from datetime import datetime, timedelta
@@ -28,7 +29,6 @@ class CPAPLogLine:
     oai: int
     hi: int
     cai: int
-    u6: int
 
 
 @dataclass
@@ -37,12 +37,6 @@ class CPAPFile:
     end: datetime
     mode: int
     ramp_time: int
-    initial_pressure: Decimal
-    minimum_pressure: Decimal
-    maximum_pressure: Decimal
-    humidity: int
-    average_leak_volume: Decimal
-    average_pressure: Decimal
     device_serial: str
     logs: list[CPAPLogLine]
 
@@ -53,80 +47,80 @@ class CPAPFile:
         # *d.bys - RT Flow Rate, every 1/10th of a second
         # *m.bys - Minute summary data
         # *s.bys - Session summary data
+        log_lines = []
+        for summary in glob.glob(pathname="*s.bys", root_dir=directory_name):
+            session_name = summary.replace("s.bys", "")
+            with open(directory_name / f"{session_name}s.bys", "rb") as summary_handle:
+                u1 = summary_handle.read(2)
+                start_year, start_month, start_day, start_hour, start_minute, start_second = struct.unpack("BBBBBB", summary_handle.read(6))
+                end_year, end_month, end_day, end_hour, end_minute, end_second = struct.unpack("BBBBBB", summary_handle.read(6))
 
+                log_start = datetime(2000 + start_year, start_month, start_day, start_hour, start_minute, start_second)
+                log_end = datetime(2000 + end_year, end_month, end_day, end_hour, end_minute, end_second)
 
+                u2 = summary_handle.read(18)
+                model_serial = summary_handle.read(16).decode()
 
+                u3 = summary_handle.read(2)
+                u_year, u_month, u_day, u_hour, u_minute, u_second = struct.unpack("BBBBBB", summary_handle.read(6))
+                u_date = datetime(2000 + u_year, u_month, u_day, u_hour, u_minute, u_second)
+                mode, = struct.unpack("B", summary_handle.read(1))
+                u4 = summary_handle.read(18)
+                fps_level, ramp = struct.unpack("BB", summary_handle.read(2))
+                print(f"Log start: {log_start}")
+                print(f"Log end: {log_end}")
+                print(f"Model serial: {model_serial}")
+                print(f"Unknown date: {u_date}")  # Matches start date?
+                print(f"FPS Level: {fps_level}")
+                print(f"Ramp: {ramp}")
+            
+            with open(directory_name / f"{session_name}m.bys", "rb") as minute_handle:
+                start_year, start_month, start_day, start_hour, start_minute, start_second = struct.unpack("BBBBBB", minute_handle.read(6))
+                record_count, = struct.unpack("h", minute_handle.read(2))
 
-        # Draw the rest of the owl
+                minutes_start = datetime(2000 + start_year, start_month, start_day, start_hour, start_minute, start_second)
 
+                print(f"Minutes start: {minutes_start}")
+                print(f"Total minute records: {record_count}")
 
+                for minute in range(record_count):
+                    # OAI is incorrect, check all event flags
+                    pressure, u7, oai, cai, hi = struct.unpack("BBBBB", minute_handle.read(5))
+                    u5 = minute_handle.read(5)
+                    leakage, = struct.unpack("B", minute_handle.read(1))
+                    u6 = minute_handle.read(7)
 
+                    log_time = minutes_start + timedelta(minutes=minute)
 
+                    log_lines.append(CPAPLogLine(log_time, pressure / 10, leakage / 10, oai, hi, cai))
+                    print(f"Pressure: {pressure}, OAI: {oai}, CAI: {cai}, HI: {hi}, Leakage: {leakage}")
 
-        with open(file_name, "rb") as cpap_file:
-            start_year, start_month, start_day, start_hour, start_minute, start_second = struct.unpack("BBBBBB", cpap_file.read(6))
-            end_year, end_month, end_day, end_hour, end_minute, end_second = struct.unpack("BBBBBB", cpap_file.read(6))
-            mode, ramp_up_time, initial_pressure, minimum_pressure, maximum_pressure = struct.unpack("BBBBB", cpap_file.read(5))
-            unknown2 = cpap_file.read(1)
-            humidity, = struct.unpack("B", cpap_file.read(1))
-            unknown3 = cpap_file.read(7)
-            average_leak_volume, = struct.unpack("B", cpap_file.read(1))
-            unknown4 = cpap_file.read(1)
-            average_pressure, = struct.unpack("B", cpap_file.read(1))
-            unknown5 = cpap_file.read(1)
-            serial, record_count = struct.unpack("16sh", cpap_file.read(18))
-            unknown6 = cpap_file.read(2)
-            unknown7, = struct.unpack("B", cpap_file.read(1))  # Always 0xF9?
+            with open(directory_name / f"{session_name}d.bys", "rb") as flow_handle:
+                start_year, start_month, start_day, start_hour, start_minute, start_second = struct.unpack("BBBBBB", flow_handle.read(6))
+                record_count, = struct.unpack("h", flow_handle.read(2))
 
-            if unknown7 != 0xF9:
-                raise InvalidCPAPFormat("Invalid CPAP format")
+                flow_start = datetime(2000 + start_year, start_month, start_day, start_hour, start_minute, start_second)
 
-            log_start = datetime(2000 + start_year, start_month, start_day, start_hour, start_minute, start_second)
-            log_end = datetime(2000 + end_year, end_month, end_day, end_hour, end_minute, end_second)
+                print(f"Flow start: {flow_start}")
+                print(f"Flow record count: {record_count}")
 
-            log_lines = []
-
-            for minute in range(record_count):
-                pressure, = struct.unpack("B", cpap_file.read(1))
-                u1, = struct.unpack("B", cpap_file.read(1))
-                u2, = struct.unpack("B", cpap_file.read(1))
-                oai, = struct.unpack("B", cpap_file.read(1))
-                hi, = struct.unpack("B", cpap_file.read(1))
-                cai, = struct.unpack("B", cpap_file.read(1))
-                u6, = struct.unpack("B", cpap_file.read(1))
-                u7, = struct.unpack("B", cpap_file.read(1))
-                u8, = struct.unpack("B", cpap_file.read(1))
-                leakage, = struct.unpack("B", cpap_file.read(1))
-
-                log_time = log_start + timedelta(minutes=minute)
-
-                # Always zero, one is possibly SPo2, another is the pulse rate
-                # If we find values, we're interested to know
-                if u6 > 0:
-                    print(f"u6 threshold {u6}, {u1}, {u2}, {u7}, {u8} - {pressure}, {oai}, {hi}, {cai}, {leakage} from {file_name}, {log_time}")
-                if u1 + u2 + u7 + u8 > 0:
-                    raise InvalidCPAPFormat("Invalid CPAP format, unexpected data")
-
-                # Missing AH, HI events (possibly 1/0)
-                log_lines.append(CPAPLogLine(log_time, pressure / 10, leakage / 10, oai, hi, cai, u6))
+                for _ in range(record_count):
+                    dataset_1 = [struct.unpack("B", flow_handle.read(1)) for _ in range(600)]
+                    dataset_2 = [struct.unpack("B", flow_handle.read(1)) for _ in range(600)]
+                    print(dataset_1)
+                    print(dataset_2)
 
         return cls(
             log_start,
             log_end,
             mode,
-            ramp_up_time,
-            initial_pressure / 10,
-            minimum_pressure / 10,
-            maximum_pressure / 10,
-            humidity,
-            average_leak_volume / 10,
-            average_pressure / 10,
-            serial,
+            ramp,
+            model_serial,
             log_lines
         )
 
 
-SHOW_CHARTS = False
+SHOW_CHARTS = True
 
 def main():
     """
@@ -137,7 +131,7 @@ def main():
         if not file.is_dir() or len(file.name) != 8:
             continue
 
-        log_file = CPAPFile.from_directory(file)
+        log_file = CPAPFile.from_directory(Path(file))
         if SHOW_CHARTS:
             print(log_file.logs)
             times = np.array([log.logged_time for log in log_file.logs])
@@ -146,7 +140,6 @@ def main():
             hi = np.array([log.hi for log in log_file.logs])
             oai = np.array([log.oai for log in log_file.logs])
             cai = np.array([log.cai for log in log_file.logs])
-            u6 = np.array([log.u6 for log in log_file.logs])
 
             fig, ax = plt.subplots(figsize=(30, 15))
             ax.plot(times, pressures)
@@ -154,7 +147,6 @@ def main():
             ax.plot(times, hi)
             ax.plot(times, oai)
             ax.plot(times, cai)
-            ax.plot(times, u6)
 
             locator = mdates.SecondLocator(interval=500)
             ax.xaxis.set_major_locator(locator)
