@@ -6,6 +6,8 @@
 DJMed and Yuwell CPAP Results Reader
 ====================================
 
+The following machines have support in OSCAR 1.7+
+
 YH550 (BreathCare ECO Auto-CPAP, A/B Models)
 -
 ![JDMed/Yuwell YH550 CPAP Machine](./examples/yh550.png)
@@ -14,7 +16,7 @@ YH580 (BreathCare I Auto-CPAP)
 -
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh580.png)
 
-YH830 (BreathCare II Bi-PAP) (This is current work in progress thanks to donated data)
+YH830 (BreathCare II Bi-PAP)
 -
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh830.png)
 
