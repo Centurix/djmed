@@ -33,9 +33,9 @@ typedef struct {
     UBYTE   bfOAI;
     UBYTE   bfCAI;
     UBYTE   bfHI;
-    UBYTE   bfUnknown[5];
+    UBYTE   bfUnknown[4];
     UBYTE   bfLeakageVolume;
-    UBYTE   bfRecord[6];
+    UBYTE   bfRecord[7];
     UBYTE   bfEOR <style=sHeading3>; // Always 0xFE
 } BYSRECORD <style=sHeading2>;
 
