@@ -33,9 +33,11 @@ typedef struct {
     UBYTE   bfOAI;
     UBYTE   bfCAI;
     UBYTE   bfHI;
-    UBYTE   bfUnknown[4];
+    UBYTE   bfUnknown1[4];
     UBYTE   bfLeakageVolume;
-    UBYTE   bfRecord[7];
+    UBYTE   bfUnknown2[5];
+    UBYTE   bfSPO2;
+    UBYTE   bfPulse;
     UBYTE   bfEOR <style=sHeading3>; // Always 0xFE
 } BYSRECORD <style=sHeading2>;
 

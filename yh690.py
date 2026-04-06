@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 """
-Read DJMed CPAP files Yuwell YH-690
+Read DJMed CPAP files Yuwell YH-690/YH-680
 """
 
 
@@ -29,6 +29,8 @@ class CPAPLogLine:
     oai: int
     hi: int
     cai: int
+    spo2: int
+    pulse: int
 
 
 @dataclass
@@ -88,11 +90,12 @@ class CPAPFile:
                     pressure, u7, oai, cai, hi = struct.unpack("BBBBB", minute_handle.read(5))
                     u5 = minute_handle.read(5)
                     leakage, = struct.unpack("B", minute_handle.read(1))
-                    u6 = minute_handle.read(7)
+                    u6 = minute_handle.read(5)
+                    spo2, pulse = struct.unpack("BB", minute_handle.read(2))
 
                     log_time = minutes_start + timedelta(minutes=minute)
 
-                    log_lines.append(CPAPLogLine(log_time, pressure / 10, leakage / 10, oai, hi, cai))
+                    log_lines.append(CPAPLogLine(log_time, pressure / 10, leakage / 10, oai, hi, cai, spo2, pulse))
                     print(f"Pressure: {pressure}, OAI: {oai}, CAI: {cai}, HI: {hi}, Leakage: {leakage}")
 
             with open(directory_name / f"{session_name}d.bys", "rb") as flow_handle:
@@ -140,6 +143,8 @@ def main():
             hi = np.array([log.hi for log in log_file.logs])
             oai = np.array([log.oai for log in log_file.logs])
             cai = np.array([log.cai for log in log_file.logs])
+            spo2 = np.array([log.spo2 for log in log_file.logs])
+            pulse = np.array([log.pulse for log in log_file.logs])
 
             fig, ax = plt.subplots(figsize=(30, 15))
             ax.plot(times, pressures)
@@ -147,6 +152,8 @@ def main():
             ax.plot(times, hi)
             ax.plot(times, oai)
             ax.plot(times, cai)
+            ax.plot(times, spo2)
+            ax.plot(times, pulse)
 
             locator = mdates.SecondLocator(interval=500)
             ax.xaxis.set_major_locator(locator)

@@ -20,8 +20,9 @@ YH830 (BreathCare II Bi-PAP)
 -
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh830.png)
 
-WIP
-===
+YH680 (BreathCare III Auto-CPAP, A/B Models)
+-
+![YH-680](examples/yh680.png)
 
 YH690 (BreathCare III Auto-CPAP, A/B Models)
 -
@@ -344,14 +345,14 @@ Records are 40 bytes in length.
 | 39 | 1 | Record end (0xFA)
 
 
-BYS YH-690 File Format
-----------------------
+BYS YH-680/YH-690 File Format
+-----------------------------
 
 This file format is different from any of the others, each session is stored in its own directory containing three files:
 
 * Session Summary
 * Minute Summary
-* RT Flow Rate data
+* RT Flow Rate data (Optional data)
 
 
 
@@ -393,10 +394,6 @@ YH450 (BreathCare II Auto-CPAP)
 YH480 (BreathCare II Auto-CPAP)
 -
 ![YH-480](examples/yh480.png)
-
-YH680 (BreathCare III Auto-CPAP, A/B Models)
--
-![YH-680](examples/yh680.png)
 
 YH720 (BreathCare I Bi-PAP)
 -
