@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 """
-Read DJMed CPAP files for the Yuwell YH-580
+Read DJMed CPAP files for the Yuwell BreathCare I
 """
 
 

@@ -71,7 +71,7 @@ This was developed using Python 3.14, but it should work in 3.7+. Without the ch
 1. Clone this repository
 2. Install the dependencies with either `uv sync` or `pip install matplotlib numpy`
 3. Copy your `.bys` files into the `data` directory directly, no sub-directories
-4. Run `python yh550.py` for the YH-550 or `python yh580py` for the YH-580
+4. Run `python breathcare_eco.py` for the YH-550 or `python breathcare_i.py` for the YH-580
 
 
 I've found these as re-branded units from many companies and drop-shipping establishments. The base manufacturer is Yuwell and this model appears to be a YH550/YH580.
@@ -414,6 +414,10 @@ YH820 (BreathCare II Bi-PAP)
 YH825 (BreathCare II Bi-PAP)
 -
 ![YH-825](examples/yh825.png)
+
+Pocket S (New unit, unknown BreathCare, assuming BreathCare ECO for the time being)
+-
+![Pocket S](examples/pocket_s.jpg)
 
 Any data from these machines is very welcome.
 
