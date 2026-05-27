@@ -33,7 +33,9 @@ typedef struct {
 typedef struct {
     UBYTE    bfRecordStart <style=sHeading2Accent>; // Always 0xF9
     UBYTE    bfMode; // 0 = CPAP, 1 = S, 2 = T, 3 = ST, 4 = VGPS, 5 = AutoS, 6 = APAP
-    UBYTE    bfUnknown4[10]; // Always seems to be zeroes
+    WORD     bIPAP;
+    WORD     bEPAP;
+    UBYTE    bfUnknown4[6]; // Always seems to be zeroes
     UBYTE    bsPressure <style=sHeading2Accent>; // Start at 40, rises to 50 and varies slightly from there
     UBYTE    bfInitialPressure <style=sHeading2Accent>;
     UBYTE    bfUnknown5[4] <style=sHeading4>; // Always seems to be zeroes

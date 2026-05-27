@@ -16,6 +16,10 @@ YH580 (BreathCare I Auto-CPAP)
 -
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh580.png)
 
+YH825 (BreathCare II Bi-PAP)
+-
+![YH-825](examples/yh825.png)
+
 YH830 (BreathCare II Bi-PAP)
 -
 ![JDMed/Yuwell YH580 CPAP Machine](./examples/yh830.png)
@@ -410,10 +414,6 @@ YH730 (BreathCare I Bi-PAP)
 YH820 (BreathCare II Bi-PAP)
 -
 ![YH-820](examples/yh820.png)
-
-YH825 (BreathCare II Bi-PAP)
--
-![YH-825](examples/yh825.png)
 
 Pocket S (New unit, unknown BreathCare, assuming BreathCare ECO for the time being)
 -
